@@ -10,7 +10,8 @@ for (let index = 0; index < names.length; index++) {
     var product = {
         id: index,
         name: name,
-        price: price
+        price: price,
+        quantity: 1
     }
     products.push(product);
     productsGridHtml += `<div class="col-md-4">
@@ -40,15 +41,29 @@ document.getElementById("quantite").innerHTML = cart.length;
 
 const addToCart = (index) => {
     var currentProduct = products[index]
-    cart.push(currentProduct)
-    productsCheckoutHtml += `
-    <div class="mb-2 row">
-                        <div class="col">${currentProduct.id}</div>
-                        <div class="col">${currentProduct.name}</div>
-                        <div class="col">${currentProduct.price}.00$</div>
-                        <div class="btn btn-danger">Delete</div>
-                    </div>`
-    document.getElementById("quantite").innerHTML = cart.length;
-    document.getElementById("cartItems").innerHTML = productsCheckoutHtml;
+    const found = cart.find(element => element.id == currentProduct.id);
+    if (found) {
+        cart.forEach(element => {
+            if (element.id == found.id) {
+                element.quantity++
+                document.getElementById("prod-"+element.id).innerHTML = element.quantity
+            }
+        });
+    } else {
+        cart.push(currentProduct)
+        productsCheckoutHtml += `
+                            <tr>
+                                <th scope="row">${currentProduct.id}</th>
+                                <td>${currentProduct.name}</td>
+                                <td id="prod-${currentProduct.id}">${currentProduct.quantity}</td>
+                                <td>${currentProduct.price}</td>
+                                <td>
+                                    <div class="btn btn-danger">Delete</div>
+                                </td>
+                            </tr>`
+        document.getElementById("quantite").innerHTML = cart.length;
+        document.getElementById("cartItems").innerHTML = productsCheckoutHtml;
+
+    }
 
 }
